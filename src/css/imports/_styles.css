@@ -18,8 +18,22 @@
 #navbar{
   overflow: hidden;
   background-color: black;
-  text-align: center;
   z-index: 999;
+  width: 100%;
+  height: auto;
+}
+
+#navbar ul{
+  padding-left: auto;
+  padding-right: auto;
+  width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+#navbar-logo{
+  padding-top: 1.5vmin;
+  padding-bottom: 1vmin;
 }
 
 /* Navbar links */
@@ -27,9 +41,10 @@
   float: left;
   display: block;
   color: #f2f2f2;
-  text-align: center;
-  padding: 14px;
   text-decoration: none;
+  padding-left: 5vmin;
+  padding-right: 5vmin;
+  font-size: 2.5vmin;
 }
 
 /* Page content */
@@ -64,10 +79,6 @@
   width: 90%;
 }
 
-/* #navbar{
-  display:none;
-} */
-
 }
 
 @media (max-width: 850px){
@@ -80,7 +91,8 @@
 
 #navbar li{
   display:block;
-  padding: 0;
+  vertical-align: middle;
+  text-align: center;
 }
 
 #navbar a{
