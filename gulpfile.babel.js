@@ -20,12 +20,12 @@ if (process.env.DEBUG) {
   defaultArgs.unshift("--debug")
 }
 
-gulp.task("hugo", (cb) => buildSite(cb));
-gulp.task("hugo-preview", (cb) => buildSite(cb, ["--buildDrafts", "--buildFuture"]));
-gulp.task("build", ["css", "js", "hugo"]);
-gulp.task("build-preview", ["css", "js", "hugo-preview"]);
+gulp.task("hugo", gulp.series((cb) => buildSite(cb)));
+gulp.task("hugo-preview", gulp.series((cb) => buildSite(cb, ["--buildDrafts", "--buildFuture"])));
+gulp.task("build", gulp.series(["css", "js", "hugo"]));
+gulp.task("build-preview", gulp.series(["css", "js", "hugo-preview"]));
 
-gulp.task("css", () => (
+gulp.task("css", gulp.series(() => (
   gulp.src("./src/css/*.css")
     .pipe(postcss([
       cssImport({from: "./src/css/main.css"}),
@@ -34,9 +34,9 @@ gulp.task("css", () => (
     ]))
     .pipe(gulp.dest("./dist/css"))
     .pipe(browserSync.stream())
-));
+)));
 
-gulp.task("js", (cb) => {
+gulp.task("js", gulp.series((cb) => {
   const myConfig = Object.assign({}, webpackConfig);
 
   webpack(myConfig, (err, stats) => {
@@ -48,9 +48,9 @@ gulp.task("js", (cb) => {
     browserSync.reload();
     cb();
   });
-});
+}));
 
-gulp.task("svg", () => {
+gulp.task("svg", gulp.series(() => {
   const svgs = gulp
     .src("site/static/img/icons-*.svg")
     .pipe(svgmin())
@@ -64,9 +64,9 @@ gulp.task("svg", () => {
     .src("site/layouts/partials/svg.html")
     .pipe(inject(svgs, {transform: fileContents}))
     .pipe(gulp.dest("site/layouts/partials/"));
-});
+}));
 
-gulp.task("server", ["hugo", "css", "js", "svg"], () => {
+gulp.task("server", gulp.series(["hugo", "css", "js", "svg"], () => {
   browserSync.init({
     server: {
       baseDir: "./dist"
@@ -76,7 +76,7 @@ gulp.task("server", ["hugo", "css", "js", "svg"], () => {
   gulp.watch("./src/css/**/*.css", ["css"]);
   gulp.watch("./site/static/img/icons-*.svg", ["svg"]);
   gulp.watch("./site/**/*", ["hugo"]);
-});
+}));
 
 function buildSite(cb, options) {
   const args = options ? defaultArgs.concat(options) : defaultArgs;
